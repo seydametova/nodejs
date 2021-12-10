@@ -1,0 +1,24 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "nodejs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seydametova/nodejs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seydametova/nodejs/issues"
+  },
+  "homepage": "https://github.com/seydametova/nodejs#readme",
+  "keywords": [],
+  "dependencies": {
+    "colors": "^1.4.0"
+  }
+}
