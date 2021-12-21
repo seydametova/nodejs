@@ -3,4 +3,5 @@
 # dependencies
 /node_modules
 access.log
+access1.log
 *_requests.log
