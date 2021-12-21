@@ -18,6 +18,11 @@
   "homepage": "https://github.com/seydametova/nodejs#readme",
   "keywords": [],
   "dependencies": {
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "inquirer": "^8.2.0",
+    "yargs": "^17.3.0"
+  },
+  "bin": {
+    "reader": "./hw4.js"
   }
 }
