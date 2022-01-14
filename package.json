@@ -20,9 +20,13 @@
   "dependencies": {
     "colors": "^1.4.0",
     "inquirer": "^8.2.0",
-    "yargs": "^17.3.0"
+    "yargs": "^17.3.0",
+    "replacestream": "^4.0.3"
   },
   "bin": {
     "reader": "./hw4.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
