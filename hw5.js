@@ -3,6 +3,7 @@
 // node hw5.js
 
 // Подключение библиотеки
+const socket = require('socket.io');
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
@@ -13,14 +14,14 @@ const replaceStream = require('replacestream');
 const { deepStrictEqual } = require('assert');
 
 // Проверка отработки процесса master
-if (cluster.isMaster) {
-    console.log(`Master ${process.pid} is running...`);
+// if (cluster.isMaster) {
+//     console.log(`Master ${process.pid} is running...`);
 
-    for (let i = 0; i < os.cpus().length; i++) {
-        console.log(`Forking process number ${i}`);
-        cluster.fork(); // Создаем инстанс
-    }
-} else { // Запускаем каждый инстанс
+//     for (let i = 0; i < os.cpus().length; i++) {
+//         console.log(`Forking process number ${i}`);
+//         cluster.fork(); // Создаем инстанс
+//     }
+// } else { // Запускаем каждый инстанс
     console.log(`Worker ${process.pid} is running...`);
     const filePath = path.join(__dirname, 'hw5.html');
 
@@ -54,5 +55,16 @@ if (cluster.isMaster) {
             res.end();
         }          
     }));
+    const io = socket(server);
+
+    io.on('connection', client => {
+        const payload = {viewers: io.engine.clientsCount};
+        client.broadcast.emit('viewers-count', payload);
+        client.emit('viewers-count', payload);
+        client.on('disconnect', () => {
+            const innerPayload = {viewers: io.engine.clientsCount};
+            client.broadcast.emit('viewers-count', innerPayload);
+        });
+    });
     server.listen(5555);
-};
+// };

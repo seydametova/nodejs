@@ -21,7 +21,8 @@
     "colors": "^1.4.0",
     "inquirer": "^8.2.0",
     "yargs": "^17.3.0",
-    "replacestream": "^4.0.3"
+    "replacestream": "^4.0.3",
+    "socket.io": "^4.2.0"
   },
   "bin": {
     "reader": "./hw4.js"

@@ -7,6 +7,9 @@ const readline = require('readline');
 const inquirer = require('inquirer');
 const path = require('path');
 const yargs = require('yargs');
+//
+const worker_threads = require('worker_threads');
+
 
 const ips = [
     '89.123.1.41',
@@ -43,42 +46,53 @@ inquirer
 
 async function processLineByLine(fileName, subStrings) {
 
-  subStrings.forEach(ip => {
-    const fileName = `${ip}_requests.log`
-    if (fs.existsSync(fileName)) {
-      fs.unlinkSync(fileName);
-    }
-  })
+  return new Promise((resolve, reject) => {
+      // Создаем воркер, на вход передаем путь до файла и объект конфигурационный
+      const worker = new worker_threads.Worker('./hw4.worker.js', {
+          workerData: {fileName, subStrings}
+      });
 
-  const fileStream = fs.createReadStream(fileName);
-
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity
+      // Подключаемся на событие
+      worker.on('message', resolve); // Когда все хорошо - вызывается ф-ция resolve
+      worker.on('error', reject); // Когда выходит ошибка - вызывается ф-ция reject
   });
 
-  const streams = {};
+  // subStrings.forEach(ip => {
+  //   const fileName = `${ip}_requests.log`
+  //   if (fs.existsSync(fileName)) {
+  //     fs.unlinkSync(fileName);
+  //   }
+  // })
 
-  for await (const line of rl) {
-    subStrings.forEach(ip => {
-      if (line.includes(ip)) {
+  // const fileStream = fs.createReadStream(fileName);
 
-        let stream;
-        if (ip in streams) {
-          stream = streams[ip];
-        } else {
-          stream = fs.createWriteStream(`${ip}_requests.log`, {
-            flags: 'a'
-          });
-          streams[ip] = stream;
-        }
+  // const rl = readline.createInterface({
+  //   input: fileStream,
+  //   crlfDelay: Infinity
+  // });
 
-        stream.write(`${line}\n`);
-      }
-    });
-  }
+  // const streams = {};
 
-  Object.values(streams).forEach(stream => stream.end());
+  // for await (const line of rl) {
+  //   subStrings.forEach(ip => {
+  //     if (line.includes(ip)) {
+
+  //       let stream;
+  //       if (ip in streams) {
+  //         stream = streams[ip];
+  //       } else {
+  //         stream = fs.createWriteStream(`${ip}_requests.log`, {
+  //           flags: 'a'
+  //         });
+  //         streams[ip] = stream;
+  //       }
+
+  //       stream.write(`${line}\n`);
+  //     }
+  //   });
+  // }
+
+  // Object.values(streams).forEach(stream => stream.end());
 }
 
 

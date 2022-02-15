@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket</title>
+    <script src="http://cdn.socket.io/4.2.0/socket.io.min.js" integrity=""></script>
+</head>
+<body>
+    <input id="input" type="text" autofocus>
+    <button id="button">Send</button>
+    <button id="disconnect">Disconnect</button>
+    <div id="messages"></div>
+    <script>
+        const socket = io('localhost:5555');
+        const sendButton = document.querySelector('#button');
+        const disconnectButton = document.querySelector('#disconnect');
+        const input = document.querySelector('#input');
+        const messagesBlock = document.querySelector('#messages');
+
+        let nick = "";
+
+        sendButton.addEventListener('click', () => {
+            const data = {
+                message: input.value,
+                nick ,
+                inverse: true
+            };
+
+            socket.emit('client-msg', data);
+            input.value = '';
+        });
+
+        disconnectButton.addEventListener('click', () => {
+            socket.emit('client-msg', {
+                nick, 
+                message: "Disconnected",
+                inverse: false
+            });
+            socket.disconnect();
+        });
+
+        function nameGenerator() {
+            let name = "";
+            const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for (let i = 0; i < 5; i++) {
+                name += possible.charAt(Math.floor(Math.random() * possible.length));
+            };
+            return name;
+        };
+
+        socket.on('connect', () => {
+            nick = nameGenerator();
+            socket.emit('client-msg', {
+                nick,
+                message: "Connected",
+                inverse: false
+            })
+            console.log('Connected');
+        });
+
+        socket.on('server-msg', (data) => {
+            messagesBlock.insertAdjacentHTML('afterbegin', `<div>${data.nick}: ${data.message}</div>`);
+        });
+    </script>
+</body>
+</html>
