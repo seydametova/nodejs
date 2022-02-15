@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Folders</title>
+    <script src="http://cdn.socket.io/4.2.0/socket.io.min.js" integrity=""></script>
 </head>
 <body>
+    <div id="visitors"></div>
     {list}
+    <script>
+        const socket = io('localhost:5555');
+        const visitorsInfo = document.querySelector('#visitors');
+
+        socket.on('viewers-count', (data) => {
+            console.log(data)
+            visitorsInfo.innerHTML = "Visitors: " + data.viewers;
+        });
+    </script>
 </body>
 </html>
